@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -17,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimeTracker.Persistance\TimeTracker.Persistance.csproj" />
+    <ProjectReference Include="..\TimeTracker.Services\TimeTracker.Services.csproj" />
   </ItemGroup>
 
 </Project>

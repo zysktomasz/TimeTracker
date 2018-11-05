@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TimeTracker.Persistance;
+using TimeTracker.Services.Interfaces;
+using TimeTracker.Services.Services;
 
 namespace TimeTracker.WebApi
 {
@@ -31,6 +33,10 @@ namespace TimeTracker.WebApi
             services.AddDbContext<TimeTrackerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TimeTrackerDatabase")));
 
+            // Add Services Dependency Injection
+            services.AddScoped<IActivityService, ActivityService>();
+
+            // Add MVC
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

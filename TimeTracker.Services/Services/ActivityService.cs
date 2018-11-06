@@ -18,6 +18,29 @@ namespace TimeTracker.Services.Services
             _context = context;
         }
 
+        public ActivityDto GetActivityById(int activityId)
+        {
+            var activity = _context.Activities
+                .SingleOrDefault(a => a.ActivityID == activityId);
+
+            // TODO add better error handling - custom response wrapper(?)
+            if (activity == null)
+                return null;
+
+            // map domain entity (Activity) to dto (ActivityDto)
+
+            var activityDto = new ActivityDto
+            {
+                ActivityID = activity.ActivityID,
+                Name = activity.Name,
+                TimeStart = activity.TimeStart,
+                TimeEnd = activity.TimeEnd,
+                TimeTotal = activity.TimeTotal
+            };
+
+            return activityDto;
+        }
+
         public IEnumerable<ActivityDto> GetAllActivities()
         {
             var result = _context.Activities

@@ -20,6 +20,18 @@ namespace TimeTracker.WebApi.Controllers
             _activityService = activityService;
         }
 
+        // GET: api/activity/{activityId}
+        [HttpGet("{activityId}", Name = "ActivityById")]
+        public IActionResult GetActivityById(int activityId)
+        {
+            var activity = _activityService.GetActivityById(activityId);
+
+            if (activity == null)
+                return NotFound();
+
+            return Ok(activity);
+        }
+
         // GET: api/activity/all
         [HttpGet("all")]
         public IActionResult GetAllActivities()

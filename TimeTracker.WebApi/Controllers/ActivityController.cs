@@ -64,5 +64,20 @@ namespace TimeTracker.WebApi.Controllers
 
             return NoContent(); // successfull stop
         }
+
+        // DELETE: api/activity/{activityId}
+        [HttpDelete("{activityId}")]
+        public IActionResult RemoveActivity(int activityId)
+        {
+            // check if Activity with specified ID exists
+            var activity = _activityService.GetActivityById(activityId);
+
+            if (activity == null)
+                return NotFound();
+
+            // exists -> remove it
+            _activityService.RemoveActivity(activityId);
+            return NoContent();
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace TimeTracker.Services.Interfaces
 
         int StartActivity(ActivityStartDto activity);
         void StopActivity(ActivityStopDto activity);
+        void RemoveActivity(int activityId);
     }
 }

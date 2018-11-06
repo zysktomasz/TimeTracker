@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace TimeTracker.Services.Services
         public ActivityDto GetActivityById(int activityId)
         {
             var activity = _context.Activities
+                .AsNoTracking() // "cheat" - avoids issue with removing already tracked entity (in RemoveEntity)
                 .SingleOrDefault(a => a.ActivityID == activityId);
 
             // TODO add better error handling - custom response wrapper(?)
@@ -55,6 +57,15 @@ namespace TimeTracker.Services.Services
                 .AsEnumerable();
 
             return result;
+        }
+
+        public void RemoveActivity(int activityId)
+        {
+            // handle Activity object by its ID
+            var activity = new Activity { ActivityID = activityId };
+
+            _context.Activities.Remove(activity);
+            _context.SaveChanges();
         }
 
         public int StartActivity(ActivityStartDto activity)

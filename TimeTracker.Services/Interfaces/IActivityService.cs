@@ -10,7 +10,7 @@ namespace TimeTracker.Services.Interfaces
         IEnumerable<ActivityDto> GetAllActivities();
         ActivityDto GetActivityById(int activityId);
 
-        void StartActivity(ActivityStartDto activity);
+        int StartActivity(ActivityStartDto activity);
         void StopActivity(ActivityStopDto activity);
     }
 }

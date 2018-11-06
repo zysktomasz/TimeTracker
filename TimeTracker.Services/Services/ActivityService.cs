@@ -57,7 +57,7 @@ namespace TimeTracker.Services.Services
             return result;
         }
 
-        public void StartActivity(ActivityStartDto activity)
+        public int StartActivity(ActivityStartDto activity)
         {
             // look for currently active Activity - if found, stop it and start this one
             var currentlyActive = _context.Activities
@@ -72,14 +72,13 @@ namespace TimeTracker.Services.Services
             var entity = new Activity
             {
                 Name = activity.Name,
-                TimeStart = activity.TimeStart,
-                // properties below yet unspecified
-                TimeEnd = null,
-                TimeTotal = null
+                TimeStart = activity.TimeStart
             };
 
             _context.Activities.Add(entity);
             _context.SaveChanges();
+
+            return entity.ActivityID;
         }
 
         public void StopActivity(ActivityStopDto activity)

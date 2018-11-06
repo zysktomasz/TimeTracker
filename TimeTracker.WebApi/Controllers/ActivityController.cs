@@ -48,9 +48,9 @@ namespace TimeTracker.WebApi.Controllers
             if (activity == null)
                 return BadRequest("Activity object cannot be null");
 
-            _activityService.StartActivity(activity);
+            var newActivityId = _activityService.StartActivity(activity);
 
-            return Ok(activity); // replace with CreatedAtRoute
+            return CreatedAtRoute("ActivityById", new { activityId = newActivityId }, activity);
         }
 
         // PUT: api/activity/stop

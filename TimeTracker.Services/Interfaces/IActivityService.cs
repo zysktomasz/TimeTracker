@@ -8,5 +8,8 @@ namespace TimeTracker.Services.Interfaces
     public interface IActivityService
     {
         IEnumerable<ActivityDto> GetAllActivities();
+
+        void StartActivity(ActivityStartDto activity);
+        void StopActivity(ActivityStopDto activity);
     }
 }

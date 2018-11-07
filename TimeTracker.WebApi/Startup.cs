@@ -35,6 +35,7 @@ namespace TimeTracker.WebApi
 
             // Add Services Dependency Injection
             services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IProjectService, ProjectService>();
 
             // Add MVC
             services.AddMvc()

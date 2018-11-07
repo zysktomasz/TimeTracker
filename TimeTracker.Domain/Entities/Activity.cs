@@ -11,5 +11,7 @@ namespace TimeTracker.Domain.Entities
         public DateTime TimeStart { get; set; }
         public DateTime? TimeEnd { get; set; }
         public int? TimeTotal { get; set; }
+
+        public Project Project { get; set; }
     }
 }

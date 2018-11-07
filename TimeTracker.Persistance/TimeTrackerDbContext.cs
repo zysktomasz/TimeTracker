@@ -12,5 +12,6 @@ namespace TimeTracker.Persistance
         }
 
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Project> Projects { get; set; }
     }
 }

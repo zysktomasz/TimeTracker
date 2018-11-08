@@ -75,8 +75,8 @@ namespace TimeTracker.Services.Services
         public int StartActivity(ActivityStartDto activity)
         {
             // look for currently active Activity - if found, stop it and start this one
-            var currentlyActive = _context.Activities
-                .SingleOrDefault(a => a.TimeEnd == null);
+            var currentlyActive = _context.Activities.SingleOrDefault(a => a.TimeEnd == null);
+
             if (currentlyActive != null)
             {
                 // TODO update with current time sent from client instead of server time
@@ -89,6 +89,21 @@ namespace TimeTracker.Services.Services
                 Name = activity.Name,
                 TimeStart = activity.TimeStart
             };
+
+            // feels kinda like wrong way to do it
+            if (activity.ProjectID != null)
+            {
+
+                // validate whether Activity's ProjectID sent from client corresponds to real, existing Project entity
+                var assignedProject = _context.Projects.Where(p => p.ProjectID == activity.ProjectID).SingleOrDefault();
+                if (assignedProject == null)
+                { } // TODO: handle error response, saying project with ProjectID doesn't exist
+                else
+                {
+                    // if Project exists, add it as navigation property in Activity
+                    entity.Project = assignedProject;
+                }
+            }
 
             _context.Activities.Add(entity);
             _context.SaveChanges();

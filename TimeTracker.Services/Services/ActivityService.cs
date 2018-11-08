@@ -22,6 +22,7 @@ namespace TimeTracker.Services.Services
         public ActivityDto GetActivityById(int activityId)
         {
             var activity = _context.Activities
+                    .Include(a => a.Project)
                 .AsNoTracking() // "cheat" - avoids issue with removing already tracked entity (in RemoveEntity)
                 .SingleOrDefault(a => a.ActivityID == activityId);
 
@@ -37,7 +38,8 @@ namespace TimeTracker.Services.Services
                 Name = activity.Name,
                 TimeStart = activity.TimeStart,
                 TimeEnd = activity.TimeEnd,
-                TimeTotal = activity.TimeTotal
+                TimeTotal = activity.TimeTotal,
+                ProjectName = activity.Project?.Name
             };
 
             return activityDto;
@@ -46,13 +48,15 @@ namespace TimeTracker.Services.Services
         public IEnumerable<ActivityDto> GetAllActivities()
         {
             var result = _context.Activities
+                    .Include(a => a.Project)
                 .Select(act => new ActivityDto
                 {
                     ActivityID = act.ActivityID,
                     Name = act.Name,
                     TimeStart = act.TimeStart,
                     TimeEnd = act.TimeEnd.Value,
-                    TimeTotal = act.TimeTotal.Value
+                    TimeTotal = act.TimeTotal.Value,
+                    ProjectName = act.Project.Name ?? null
                 })
                 .AsEnumerable();
 

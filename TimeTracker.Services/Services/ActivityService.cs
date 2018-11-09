@@ -83,6 +83,7 @@ namespace TimeTracker.Services.Services
                 StopActivity(new ActivityStopDto { TimeEnd = DateTime.Now }); 
             }
 
+
             // create new Activity
             var entity = new Activity
             {
@@ -90,19 +91,12 @@ namespace TimeTracker.Services.Services
                 TimeStart = activity.TimeStart
             };
 
-            // feels kinda like wrong way to do it
+            // FluentValidation already validated that if client sents ProjectID it corresponds to existing Project
+            // otherwise it doesn't even fire this method
             if (activity.ProjectID != null)
             {
-
-                // validate whether Activity's ProjectID sent from client corresponds to real, existing Project entity
                 var assignedProject = _context.Projects.Where(p => p.ProjectID == activity.ProjectID).SingleOrDefault();
-                if (assignedProject == null)
-                { } // TODO: handle error response, saying project with ProjectID doesn't exist
-                else
-                {
-                    // if Project exists, add it as navigation property in Activity
-                    entity.Project = assignedProject;
-                }
+                entity.Project = assignedProject;
             }
 
             _context.Activities.Add(entity);

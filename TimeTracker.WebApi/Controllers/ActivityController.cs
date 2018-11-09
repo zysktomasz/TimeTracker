@@ -11,6 +11,7 @@ using TimeTracker.Services.Interfaces;
 namespace TimeTracker.WebApi.Controllers
 {
     [Route("api/activity")]
+    [ApiController]
     public class ActivityController : Controller
     {
         private readonly IActivityService _activityService;

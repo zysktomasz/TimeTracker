@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TimeTracker.Persistance;
+using TimeTracker.Services.DTO.Activity;
 using TimeTracker.Services.Interfaces;
 using TimeTracker.Services.Services;
 
@@ -39,7 +41,8 @@ namespace TimeTracker.WebApi
 
             // Add MVC
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ActivityStartDtoValidator>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -75,7 +75,7 @@ namespace TimeTracker.Services.Services
         public int StartActivity(ActivityStartDto activity)
         {
             // look for currently active Activity - if found, stop it and start this one
-            var currentlyActive = GetCurrentlyActiveActivity();
+            var currentlyActive = _context.Activities.SingleOrDefault(a => a.TimeEnd == null);
 
             if (currentlyActive != null)
             {
@@ -107,7 +107,12 @@ namespace TimeTracker.Services.Services
 
         public void StopActivity(ActivityStopDto activity)
         {
-            var entity = GetCurrentlyActiveActivity();
+            var entity = _context.Activities
+                .SingleOrDefault(a => a.TimeEnd == null);
+
+            // TODO Add error handling - when no activity to stop
+            if (entity == null)
+                return;
 
             // update properties
             entity.TimeEnd = activity.TimeEnd;
@@ -116,17 +121,6 @@ namespace TimeTracker.Services.Services
             _context.Activities.Update(entity);
 
             _context.SaveChanges();
-        }
-
-        private Activity GetCurrentlyActiveActivity()
-        {
-            var entity = _context.Activities
-                .SingleOrDefault(a => a.TimeEnd == null);
-
-            if (entity == null)
-                return null;
-
-            return entity;
         }
     }
 }

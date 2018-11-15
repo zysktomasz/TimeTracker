@@ -30,7 +30,7 @@ namespace TimeTracker.WebApi.Tests
             var controller = new ProjectController(_serviceMock.Object);
 
             // act
-            var result = controller.GetProjectById(5);
+            var result = controller.GetSingleProject(5);
 
             // assert
             Assert.IsType<OkObjectResult>(result);
@@ -47,7 +47,7 @@ namespace TimeTracker.WebApi.Tests
             var controller = new ProjectController(_serviceMock.Object);
 
             // act
-            var okResult = controller.GetProjectById(5) as OkObjectResult;
+            var okResult = controller.GetSingleProject(5) as OkObjectResult;
 
             // assert
             Assert.IsType<ProjectDto>(okResult.Value);
@@ -64,7 +64,7 @@ namespace TimeTracker.WebApi.Tests
             var controller = new ProjectController(_serviceMock.Object);
 
             // act
-            var result = controller.GetProjectById(666);
+            var result = controller.GetSingleProject(666);
 
             // assert
             Assert.IsType<NotFoundResult>(result);

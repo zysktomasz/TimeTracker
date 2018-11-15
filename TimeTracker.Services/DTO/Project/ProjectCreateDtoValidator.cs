@@ -10,7 +10,7 @@ namespace TimeTracker.Services.DTO.Project
         public ProjectCreateDtoValidator()
         {
             RuleFor(x => x.Name)
-                .NotEmpty().NotNull()
+                .NotEmpty()
                 .MaximumLength(100);
         }
     }

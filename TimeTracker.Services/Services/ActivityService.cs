@@ -119,8 +119,8 @@ namespace TimeTracker.Services.Services
             var entity = GetCurrentlyActiveActivity();
 
             // update properties
-            entity.TimeEnd = activity.TimeEnd;
-            entity.TimeTotal = (int)((activity.TimeEnd - entity.TimeStart).TotalSeconds); // TODO Validate TimeEnd value
+            entity.TimeEnd = activity.TimeEnd ?? DateTime.Now;
+            entity.TimeTotal = (int)((entity.TimeEnd - entity.TimeStart).Value.TotalSeconds); // TODO Validate TimeEnd value
 
             _context.Activities.Update(entity);
 

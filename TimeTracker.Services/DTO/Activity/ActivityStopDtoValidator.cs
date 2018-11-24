@@ -15,8 +15,8 @@ namespace TimeTracker.Services.DTO.Activity
         {
             _context = context;
 
-            RuleFor(x => x.TimeEnd)
-                .Must(HaveCurrentlyRunningActivity).WithMessage("There is no Activity currently running.");
+            RuleFor(x => x.TimeEnd.Value)
+                .Must(HaveCurrentlyRunningActivity).WithMessage("There is no Activity currently running.").When(x => x.TimeEnd != null);
         }
 
         public bool HaveCurrentlyRunningActivity(DateTime date)

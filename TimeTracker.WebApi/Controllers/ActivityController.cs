@@ -23,7 +23,7 @@ namespace TimeTracker.WebApi.Controllers
 
         // GET: api/activity/{activityId}
         [HttpGet("{activityId}", Name = "ActivityById")]
-        public IActionResult GetActivityById(int activityId)
+        public IActionResult GetSingleActivity(int activityId)
         {
             var activity = _activityService.GetActivityById(activityId);
 
@@ -49,9 +49,9 @@ namespace TimeTracker.WebApi.Controllers
             if (activity == null)
                 return BadRequest("Activity object cannot be null");
 
-            var newActivityId = _activityService.StartActivity(activity);
 
-            return CreatedAtRoute("ActivityById", new { activityId = newActivityId }, activity);
+            var newActivity = _activityService.StartActivity(activity);
+            return CreatedAtRoute("ActivityById", new { activityId = newActivity.ActivityID }, newActivity);
         }
 
         // PUT: api/activity/stop

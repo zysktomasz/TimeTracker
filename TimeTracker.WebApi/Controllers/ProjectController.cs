@@ -14,7 +14,7 @@ namespace TimeTracker.WebApi.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
-
+        // test
         public ProjectController(IProjectService projectService)
         {
             _projectService = projectService;
@@ -22,7 +22,7 @@ namespace TimeTracker.WebApi.Controllers
 
         // GET: api/project/{projectId}
         [HttpGet("{projectId}", Name = "ProjectById")]
-        public IActionResult GetProjectById(int projectId)
+        public IActionResult GetSingleProject(int projectId)
         {
             var project = _projectService.GetProjectById(projectId);
 

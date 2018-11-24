@@ -6,6 +6,6 @@ namespace TimeTracker.Services.DTO.Activity
 {
     public class ActivityStopDto
     {
-        public DateTime TimeEnd { get; set; }
+        public DateTime? TimeEnd { get; set; }
     }
 }

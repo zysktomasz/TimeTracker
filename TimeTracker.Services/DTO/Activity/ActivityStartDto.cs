@@ -7,7 +7,7 @@ namespace TimeTracker.Services.DTO.Activity
     public class ActivityStartDto
     {
         public string Name { get; set; }
-        public DateTime TimeStart { get; set; }
+        public DateTime? TimeStart { get; set; }
         public int? ProjectID { get; set; }
     }
 }

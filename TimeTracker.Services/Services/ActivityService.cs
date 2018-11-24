@@ -88,7 +88,7 @@ namespace TimeTracker.Services.Services
             var entity = new Activity
             {
                 Name = activity.Name,
-                TimeStart = activity.TimeStart
+                TimeStart = activity.TimeStart ?? DateTime.Now
             };
 
             // FluentValidation already validated that if client sents ProjectID it corresponds to existing Project

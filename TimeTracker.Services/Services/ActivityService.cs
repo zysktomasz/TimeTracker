@@ -72,7 +72,7 @@ namespace TimeTracker.Services.Services
             _context.SaveChanges();
         }
 
-        public int StartActivity(ActivityStartDto activity)
+        public ActivityStartReturnDto StartActivity(ActivityStartDto activity)
         {
             // look for currently active Activity - if found, stop it and start this one
             var currentlyActive = GetCurrentlyActiveActivity();
@@ -102,7 +102,16 @@ namespace TimeTracker.Services.Services
             _context.Activities.Add(entity);
             _context.SaveChanges();
 
-            return entity.ActivityID;
+            var activityReturnDto = new ActivityStartReturnDto
+            {
+                ActivityID = entity.ActivityID,
+                Name = entity.Name,
+                TimeStart = entity.TimeStart,
+                ProjectID = entity.Project?.ProjectID,
+                ProjectName = entity.Project?.Name
+            };
+
+            return activityReturnDto;
         }
 
         public void StopActivity(ActivityStopDto activity)

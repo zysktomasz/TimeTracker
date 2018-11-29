@@ -12,6 +12,7 @@ namespace TimeTracker.Services.AutoMapper
         public DomainProfile()
         {
             CreateMap<Activity, ActivityDto>();
+            CreateMap<Activity, ActivityStartReturnDto>();
         }
     }
 }

@@ -8,6 +8,7 @@ namespace TimeTracker.Services.Interfaces
     public interface IProjectService
     {
         ProjectDto GetProjectById(int projectId);
+        ProjectDto GetProjectByName(string name);
         IEnumerable<ProjectDto> GetAllProjects();
 
         int CreateProject(ProjectCreateDto project);

@@ -57,6 +57,25 @@ namespace TimeTracker.Services.Services
             return projectDto;
         }
 
+        public ProjectDto GetProjectByName(string name)
+        {
+            var project = _context.Projects
+                .AsNoTracking()
+                .SingleOrDefault(p => p.Name == name);
+
+            if (project == null)
+                return null;
+
+            // map domain entity (Project) to DTO (ProjectDto)
+            var projectDto = new ProjectDto
+            {
+                ProjectID = project.ProjectID,
+                Name = project.Name
+            };
+
+            return projectDto;
+        }
+
         public void RemoveProject(int projectId)
         {
             var projectToRemove = new Project { ProjectID = projectId };

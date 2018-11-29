@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using TimeTracker.Domain.Entities;
 using TimeTracker.Services.DTO.Activity;
+using TimeTracker.Services.DTO.Project;
 
 namespace TimeTracker.Services.AutoMapper
 {
@@ -13,6 +14,7 @@ namespace TimeTracker.Services.AutoMapper
         {
             CreateMap<Activity, ActivityDto>();
             CreateMap<Activity, ActivityStartReturnDto>();
+            CreateMap<Project, ProjectDto>();
         }
     }
 }

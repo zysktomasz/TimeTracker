@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,9 @@ namespace TimeTracker.WebApi
             // Add Services Dependency Injection
             services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<IProjectService, ProjectService>();
+
+            // Register AutoMapper DI
+            services.AddAutoMapper();
 
             // Add MVC
             services.AddMvc()

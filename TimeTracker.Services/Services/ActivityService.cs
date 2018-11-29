@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace TimeTracker.Services.Services
 {
     public class ActivityService : IActivityService
     {
+        private readonly IMapper _mapper;
         private readonly TimeTrackerDbContext _context;
 
-        public ActivityService(TimeTrackerDbContext context)
+        public ActivityService(TimeTrackerDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public ActivityDto GetActivityById(int activityId)
@@ -29,43 +32,22 @@ namespace TimeTracker.Services.Services
             // TODO add better error handling - custom response wrapper(?)
             if (activity == null)
                 return null;
-
-            // map domain entity (Activity) to dto (ActivityDto)
-
-            var activityDto = new ActivityDto
-            {
-                ActivityID = activity.ActivityID,
-                Name = activity.Name,
-                TimeStart = activity.TimeStart,
-                TimeEnd = activity.TimeEnd,
-                TimeTotal = activity.TimeTotal,
-                ProjectName = activity.Project?.Name
-            };
+            
+            var activityDto = _mapper.Map<ActivityDto>(activity);
 
             return activityDto;
         }
 
         public IEnumerable<ActivityDto> GetAllActivities()
         {
-            var result = _context.Activities
-                    .Include(a => a.Project)
-                .Select(act => new ActivityDto
-                {
-                    ActivityID = act.ActivityID,
-                    Name = act.Name,
-                    TimeStart = act.TimeStart,
-                    TimeEnd = act.TimeEnd.Value,
-                    TimeTotal = act.TimeTotal.Value,
-                    ProjectName = act.Project.Name ?? null
-                })
-                .AsEnumerable();
+            var activitiesFromDb = _context.Activities.Include(a => a.Project).AsEnumerable();
+            var result = _mapper.Map<IEnumerable<ActivityDto>>(activitiesFromDb);
 
             return result;
         }
 
         public void RemoveActivity(int activityId)
         {
-            // handle Activity object by its ID
             var activity = new Activity { ActivityID = activityId };
 
             _context.Activities.Remove(activity);
@@ -83,8 +65,6 @@ namespace TimeTracker.Services.Services
                 StopActivity(new ActivityStopDto { TimeEnd = DateTime.Now });
             }
 
-
-            // create new Activity
             var entity = new Activity
             {
                 Name = activity.Name,
@@ -102,14 +82,8 @@ namespace TimeTracker.Services.Services
             _context.Activities.Add(entity);
             _context.SaveChanges();
 
-            var activityReturnDto = new ActivityStartReturnDto
-            {
-                ActivityID = entity.ActivityID,
-                Name = entity.Name,
-                TimeStart = entity.TimeStart,
-                ProjectID = entity.Project?.ProjectID,
-                ProjectName = entity.Project?.Name
-            };
+            var activityReturnDto = _mapper.Map<ActivityStartReturnDto>(entity);
+            activityReturnDto.ProjectID = entity.Project?.ProjectID;
 
             return activityReturnDto;
         }
@@ -119,8 +93,8 @@ namespace TimeTracker.Services.Services
             var entity = GetCurrentlyActiveActivity();
 
             // update properties
-            entity.TimeEnd = activity.TimeEnd;
-            entity.TimeTotal = (int)((activity.TimeEnd - entity.TimeStart).TotalSeconds); // TODO Validate TimeEnd value
+            entity.TimeEnd = activity.TimeEnd ?? DateTime.Now;
+            entity.TimeTotal = (int)((entity.TimeEnd - entity.TimeStart).Value.TotalSeconds); // TODO Validate TimeEnd value
 
             _context.Activities.Update(entity);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace TimeTracker.Services.Services
 {
     public class ProjectService : IProjectService
     {
+        private readonly IMapper _mapper;
         private readonly TimeTrackerDbContext _context;
 
-        public ProjectService(TimeTrackerDbContext context)
+        public ProjectService(TimeTrackerDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public int CreateProject(ProjectCreateDto project)
@@ -34,13 +37,8 @@ namespace TimeTracker.Services.Services
 
         public IEnumerable<ProjectDto> GetAllProjects()
         {
-            var result = _context.Projects
-                .Select(p => new ProjectDto
-                {
-                    ProjectID = p.ProjectID,
-                    Name = p.Name
-                })
-                .AsEnumerable();
+            var projectsFromDb = _context.Projects.AsEnumerable();
+            var result = _mapper.Map<IEnumerable<ProjectDto>>(projectsFromDb);
 
             return result;
         }
@@ -54,12 +52,7 @@ namespace TimeTracker.Services.Services
             if (project == null)
                 return null;
 
-            // map domain entity (Project) to DTO (ProjectDto)
-            var projectDto = new ProjectDto
-            {
-                ProjectID = project.ProjectID,
-                Name = project.Name
-            };
+            var projectDto = _mapper.Map<ProjectDto>(project);
 
             return projectDto;
         }

@@ -7,12 +7,14 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TimeTracker.Domain.Identity;
 using TimeTracker.Persistance;
 using TimeTracker.Services.DTO.Activity;
 using TimeTracker.Services.Interfaces;
@@ -35,6 +37,12 @@ namespace TimeTracker.WebApi
             // Add DbContext
             services.AddDbContext<TimeTrackerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TimeTrackerDatabase")));
+
+            // Add Identity
+            // ===== Add Identity ========
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<TimeTrackerDbContext>()
+                .AddDefaultTokenProviders();
 
             // Add Services Dependency Injection
             services.AddScoped<IActivityService, ActivityService>();

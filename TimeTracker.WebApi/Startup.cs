@@ -44,13 +44,7 @@ namespace TimeTracker.WebApi
 
             // ===== Add Jwt Authentication ========
             //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                })
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     //options.SaveToken = true;
@@ -71,7 +65,7 @@ namespace TimeTracker.WebApi
 
             // Add Identity
             // ===== Add Identity ========
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentityCore<User>()
                 .AddEntityFrameworkStores<TimeTrackerDbContext>()
                 .AddDefaultTokenProviders();
 

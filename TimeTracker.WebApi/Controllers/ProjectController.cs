@@ -13,7 +13,7 @@ namespace TimeTracker.WebApi.Controllers
 {
     [Route("api/project")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;

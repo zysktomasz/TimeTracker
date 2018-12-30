@@ -22,7 +22,7 @@ namespace TimeTracker.Services.Services
             _mapper = mapper;
         }
 
-        public int CreateProject(ProjectCreateDto project)
+        public ProjectDto CreateProject(ProjectCreateDto project)
         {
             var entity = new Project
             {
@@ -32,12 +32,14 @@ namespace TimeTracker.Services.Services
             _context.Projects.Add(entity);
             _context.SaveChanges();
 
-            return entity.ProjectID;
+            var projectDto = _mapper.Map<ProjectDto>(entity);
+
+            return projectDto;
         }
 
         public IEnumerable<ProjectDto> GetAllProjects()
         {
-            var projectsFromDb = _context.Projects.AsEnumerable();
+            var projectsFromDb = _context.Projects.OrderByDescending(p => p.ProjectID).AsEnumerable();
             var result = _mapper.Map<IEnumerable<ProjectDto>>(projectsFromDb);
 
             return result;

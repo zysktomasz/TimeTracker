@@ -40,7 +40,7 @@ namespace TimeTracker.Services.Services
 
         public IEnumerable<ActivityDto> GetAllActivities()
         {
-            var activitiesFromDb = _context.Activities.Include(a => a.Project).AsEnumerable();
+            var activitiesFromDb = _context.Activities.Include(a => a.Project).OrderByDescending(a => a.TimeStart).AsEnumerable();
             var result = _mapper.Map<IEnumerable<ActivityDto>>(activitiesFromDb);
 
             return result;

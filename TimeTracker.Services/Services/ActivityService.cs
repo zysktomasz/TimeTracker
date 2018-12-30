@@ -31,9 +31,17 @@ namespace TimeTracker.Services.Services
             // gets UserAccount object by user email from JWT
             // replaces async _userManager.GetUserAsync(User)
             // TODO: probably should reconsider this
-            string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             _currentUser = _context.Users.FirstOrDefault(u => u.Email == userEmail);
         }
+
+        //private UserAccount GetCurrentUserAccount()
+        //{
+        //    string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        //    var currUser = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+        //    return currUser;
+        //}
 
 
         public ActivityDto GetActivityById(int activityId)

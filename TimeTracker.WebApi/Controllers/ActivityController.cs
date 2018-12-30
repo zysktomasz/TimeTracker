@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeTracker.Services.DTO.Activity;
 using TimeTracker.Services.Interfaces;
@@ -12,6 +14,8 @@ namespace TimeTracker.WebApi.Controllers
 {
     [Route("api/activity")]
     [ApiController]
+    [Authorize(AuthenticationSchemes =
+    JwtBearerDefaults.AuthenticationScheme)]
     public class ActivityController : Controller
     {
         private readonly IActivityService _activityService;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeTracker.Domain.Identity;
 
 namespace TimeTracker.Domain.Entities
 {
@@ -10,5 +11,6 @@ namespace TimeTracker.Domain.Entities
         public string Name { get; set; }
 
         public ICollection<Activity> Activities { get; set; }
+        public UserAccount UserAccount { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace TimeTracker.WebApi
                     //options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false, // validate the server that created this token
+                        ValidateIssuer = true, // validate the server that created this token
                         ValidateAudience = false, // ensure that the recipient of the token is authorized to receive it 
                         ValidateLifetime = true, // check that the token is not expired and that the signing key of the issuer is valid
                         ValidateIssuerSigningKey = true, // verify that the key used to sign the incoming token is part of a list of trusted keys
@@ -65,7 +65,7 @@ namespace TimeTracker.WebApi
 
             // Add Identity
             // ===== Add Identity ========
-            services.AddDefaultIdentity<UserAccount>(options =>
+            services.AddIdentity<UserAccount, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -83,6 +83,8 @@ namespace TimeTracker.WebApi
 
             // Register AutoMapper DI
             services.AddAutoMapper();
+
+            services.AddHttpContextAccessor();
 
             // Add MVC
             services.AddMvc()

@@ -48,9 +48,9 @@ namespace TimeTracker.WebApi.Controllers
             if (project == null)
                 return BadRequest("Project object cannot be null");
 
-            var newProjectId = _projectService.CreateProject(project);
+            var newProject = _projectService.CreateProject(project);
 
-            return CreatedAtRoute("ProjectById", new { projectId =  newProjectId }, project);
+            return CreatedAtRoute("ProjectById", new { projectId =  newProject.ProjectID }, newProject);
         }
 
         // DELETE: api/project/{projectId}

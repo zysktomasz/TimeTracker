@@ -12,5 +12,6 @@ namespace TimeTracker.Services.DTO.Activity
         public DateTime? TimeEnd { get; set; }
         public int? TimeTotal { get; set; }
         public string ProjectName { get; set; }
+        public int? ProjectProjectID { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TimeTracker.Domain.Entities;
+using TimeTracker.Domain.Identity;
 
 namespace TimeTracker.Persistance
 {
-    public class TimeTrackerDbContext : DbContext
+    public class TimeTrackerDbContext : IdentityDbContext<User>
     {
         public TimeTrackerDbContext(DbContextOptions<TimeTrackerDbContext> options)
             : base(options)

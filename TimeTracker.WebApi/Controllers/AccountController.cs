@@ -40,6 +40,20 @@ namespace TimeTracker.WebApi.Controllers
             _configuration = configuration;
         }
 
+        [HttpPost("login")]
+        public async Task<object> Login([FromBody] LoginDto model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
+                return await GenerateJwtToken(model.Email, appUser);
+            }
+
+            throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
+        }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
@@ -69,8 +83,6 @@ namespace TimeTracker.WebApi.Controllers
 
         private async Task<object> GenerateJwtToken(string email, UserAccount user)
         {
-            // get user roles from database
-            var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, email),
@@ -78,10 +90,6 @@ namespace TimeTracker.WebApi.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

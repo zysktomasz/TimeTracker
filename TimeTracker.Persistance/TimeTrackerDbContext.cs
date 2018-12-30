@@ -5,7 +5,7 @@ using TimeTracker.Domain.Identity;
 
 namespace TimeTracker.Persistance
 {
-    public class TimeTrackerDbContext : IdentityDbContext<User>
+    public class TimeTrackerDbContext : IdentityDbContext<UserAccount>
     {
         public TimeTrackerDbContext(DbContextOptions<TimeTrackerDbContext> options)
             : base(options)

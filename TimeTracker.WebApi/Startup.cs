@@ -65,7 +65,7 @@ namespace TimeTracker.WebApi
 
             // Add Identity
             // ===== Add Identity ========
-            services.AddIdentityCore<User>()
+            services.AddDefaultIdentity<UserAccount>()
                 .AddEntityFrameworkStores<TimeTrackerDbContext>()
                 .AddDefaultTokenProviders();
 

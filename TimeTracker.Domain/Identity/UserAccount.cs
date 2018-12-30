@@ -2,7 +2,7 @@
 
 namespace TimeTracker.Domain.Identity
 {
-    public class User : IdentityUser
+    public class UserAccount : IdentityUser
     {
 
     }

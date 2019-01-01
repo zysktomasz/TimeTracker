@@ -50,6 +50,17 @@ namespace TimeTracker.WebApi.Controllers
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
                 return await GenerateJwtToken(model.Email, appUser);
             }
+            else
+            {
+                // TODO: create helper method to manage modelstate errors
+                ModelStateDictionary errorsDictionary = ModelState;
+
+                errorsDictionary.TryAddModelError("Account", "This account probably doesnt exist boiii");
+               
+                return new BadRequestObjectResult(errorsDictionary);
+            }
+            
+           
 
             throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
         }

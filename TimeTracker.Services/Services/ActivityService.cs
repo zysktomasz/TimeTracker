@@ -19,6 +19,8 @@ namespace TimeTracker.Services.Services
     {
         private readonly IMapper _mapper;
         private readonly TimeTrackerDbContext _context;
+
+        // properties used to get UserAccount from JWT's claims sent in authorization 
         private readonly IHttpContextAccessor _httpContext;
         private readonly UserAccount _currentUser;
 
@@ -28,22 +30,13 @@ namespace TimeTracker.Services.Services
             _mapper = mapper;
             _httpContext = httpContext;
 
-            // gets UserAccount object by user email from JWT
-            // replaces async _userManager.GetUserAsync(User)
-            // TODO: probably should reconsider this
+            // gets user's email from claims and UserAccount from DB based on that email
+            // maybe could do that in different way?
             string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             _currentUser = _context.Users.FirstOrDefault(u => u.Email == userEmail);
         }
 
-        //private UserAccount GetCurrentUserAccount()
-        //{
-        //    string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-        //    var currUser = _context.Users.FirstOrDefault(u => u.Email == userEmail);
-
-        //    return currUser;
-        //}
-
-
+        // gets single Activity by ID and created by UserAccount from request
         public ActivityDto GetActivityById(int activityId)
         {
             var activity = _context
@@ -62,6 +55,8 @@ namespace TimeTracker.Services.Services
             return activityDto;
         }
 
+        // gets all activities created by current user
+        // includes details of project it's assigned to
         public IEnumerable<ActivityDto> GetAllActivities()
         {
 
@@ -75,6 +70,7 @@ namespace TimeTracker.Services.Services
 
             return result;
         }
+
 
         public void RemoveActivity(int activityId)
         {

@@ -18,6 +18,8 @@ namespace TimeTracker.Services.Services
     {
         private readonly IMapper _mapper;
         private readonly TimeTrackerDbContext _context;
+
+        // properties used to get UserAccount from JWT's claims sent in authorization header
         private readonly IHttpContextAccessor _httpContext;
         private readonly UserAccount _currentUser;
 
@@ -27,38 +29,15 @@ namespace TimeTracker.Services.Services
             _mapper = mapper;
             _httpContext = httpContext;
 
+            // gets user's email from claims and UserAccount from DB based on that email
+            // maybe could do that in different way?
             string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             _currentUser = _context.Users.FirstOrDefault(u => u.Email == userEmail);
         }
 
-        public ProjectDto CreateProject(ProjectCreateDto project)
-        {
-            var entity = new Project
-            {
-                Name = project.Name,
-                UserAccount = _currentUser
-            };
 
-            _context.Projects.Add(entity);
-            _context.SaveChanges();
-
-            var projectDto = _mapper.Map<ProjectDto>(entity);
-
-            return projectDto;
-        }
-
-        public IEnumerable<ProjectDto> GetAllProjects()
-        {
-            var projectsFromDb = _context
-                                    .Projects
-                                        .Where(p => p.UserAccount == _currentUser)
-                                    .OrderByDescending(p => p.ProjectID)
-                                    .AsEnumerable();
-            var result = _mapper.Map<IEnumerable<ProjectDto>>(projectsFromDb);
-
-            return result;
-        }
-
+        // gets single Project by ID, if it's created by UserAccount sending request
+        // returns single Project or null
         public ProjectDto GetProjectById(int projectId)
         {
             var project = _context
@@ -75,6 +54,43 @@ namespace TimeTracker.Services.Services
             return projectDto;
         }
 
+
+        // gets all Projects created by UserAccount sending request
+        // returns list of Projects (w/ ProjectID and Name for each one) 
+        public IEnumerable<ProjectDto> GetAllProjects()
+        {
+            var projectsFromDb = _context
+                                    .Projects
+                                        .Where(p => p.UserAccount == _currentUser)
+                                    .OrderByDescending(p => p.ProjectID)
+                                    .AsEnumerable();
+            var result = _mapper.Map<IEnumerable<ProjectDto>>(projectsFromDb);
+
+            return result;
+        }
+
+
+        // creates new Project entity based on DTO sent in request body
+        // returns DTO with ProjectID and Name
+        public ProjectDto CreateProject(ProjectCreateDto project)
+        {
+            var entity = new Project
+            {
+                Name = project.Name,
+                UserAccount = _currentUser
+            };
+
+            _context.Projects.Add(entity);
+            _context.SaveChanges();
+
+            var projectDto = _mapper.Map<ProjectDto>(entity);
+
+            return projectDto;
+        }
+
+
+        // method used in ProjectCreateDtoValidator to determine if Project's Name is unique for UserAccount
+        // sending request; returns null (meaning unique name) or project
         public ProjectDto GetProjectByName(string name)
         {
             var project = _context
@@ -86,15 +102,11 @@ namespace TimeTracker.Services.Services
             if (project == null)
                 return null;
 
-            // map domain entity (Project) to DTO (ProjectDto)
-            var projectDto = new ProjectDto
-            {
-                ProjectID = project.ProjectID,
-                Name = project.Name
-            };
+            var projectDto = _mapper.Map<ProjectDto>(project);
 
             return projectDto;
         }
+
 
         public void RemoveProject(int projectId)
         {

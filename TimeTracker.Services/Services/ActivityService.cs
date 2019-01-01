@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using TimeTracker.Domain.Entities;
+using TimeTracker.Domain.Identity;
 using TimeTracker.Persistance;
 using TimeTracker.Services.DTO.Activity;
 using TimeTracker.Services.Interfaces;
@@ -16,18 +20,31 @@ namespace TimeTracker.Services.Services
         private readonly IMapper _mapper;
         private readonly TimeTrackerDbContext _context;
 
-        public ActivityService(TimeTrackerDbContext context, IMapper mapper)
+        // properties used to get UserAccount from JWT's claims sent in authorization 
+        private readonly IHttpContextAccessor _httpContext;
+        private readonly UserAccount _currentUser;
+
+        public ActivityService(TimeTrackerDbContext context, IMapper mapper, IHttpContextAccessor httpContext)
         {
             _context = context;
             _mapper = mapper;
+            _httpContext = httpContext;
+
+            // gets user's email from claims and UserAccount from DB based on that email
+            // maybe could do that in different way?
+            string userEmail = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            _currentUser = _context.Users.FirstOrDefault(u => u.Email == userEmail);
         }
 
+        // gets single Activity by ID and created by UserAccount from request
         public ActivityDto GetActivityById(int activityId)
         {
-            var activity = _context.Activities
-                    .Include(a => a.Project)
-                .AsNoTracking() // "cheat" - avoids issue with removing already tracked entity (in RemoveEntity)
-                .SingleOrDefault(a => a.ActivityID == activityId);
+            var activity = _context
+                            .Activities
+                                .Where(a => a.UserAccount == _currentUser)
+                                .Include(a => a.Project)
+                            .AsNoTracking() // "cheat" - avoids issue with removing already tracked entity (in RemoveEntity)
+                            .SingleOrDefault(a => a.ActivityID == activityId);
 
             // TODO add better error handling - custom response wrapper(?)
             if (activity == null)
@@ -38,16 +55,28 @@ namespace TimeTracker.Services.Services
             return activityDto;
         }
 
+        // gets all activities created by current user
+        // includes details of project it's assigned to
         public IEnumerable<ActivityDto> GetAllActivities()
         {
-            var activitiesFromDb = _context.Activities.Include(a => a.Project).OrderByDescending(a => a.TimeStart).AsEnumerable();
+
+            var activitiesFromDb = _context
+                                    .Activities
+                                        .Where(a => a.UserAccount == _currentUser)
+                                        .Include(a => a.Project)
+                                    .OrderByDescending(a => a.TimeStart)
+                                    .AsEnumerable();
             var result = _mapper.Map<IEnumerable<ActivityDto>>(activitiesFromDb);
 
             return result;
         }
 
+
         public void RemoveActivity(int activityId)
         {
+            // TODO: validate if request is sent by user who owns this activity
+            // TODO: validate if request is sent by user who owns this activity
+            // TODO: validate if request is sent by user who owns this activity
             var activity = new Activity { ActivityID = activityId };
 
             _context.Activities.Remove(activity);
@@ -56,6 +85,10 @@ namespace TimeTracker.Services.Services
 
         public ActivityStartReturnDto StartActivity(ActivityStartDto activity)
         {
+            // TODO: validate if assignedProject is owned by _currentUser
+            // TODO: validate if assignedProject is owned by _currentUser
+            // TODO: validate if assignedProject is owned by _currentUser
+
             // look for currently active Activity - if found, stop it and start this one
             var currentlyActive = GetCurrentlyActiveActivity();
 
@@ -68,7 +101,8 @@ namespace TimeTracker.Services.Services
             var entity = new Activity
             {
                 Name = activity.Name,
-                TimeStart = activity.TimeStart ?? DateTime.Now
+                TimeStart = activity.TimeStart ?? DateTime.Now,
+                UserAccount = _currentUser
             };
 
             // FluentValidation already validated that if client sents ProjectID it corresponds to existing Project
@@ -103,8 +137,10 @@ namespace TimeTracker.Services.Services
 
         private Activity GetCurrentlyActiveActivity()
         {
-            var entity = _context.Activities
-                .SingleOrDefault(a => a.TimeEnd == null);
+            var entity = _context
+                        .Activities
+                            .Where(a => a.UserAccount == _currentUser)
+                        .SingleOrDefault(a => a.TimeEnd == null);
 
             if (entity == null)
                 return null;

@@ -50,7 +50,7 @@ namespace TimeTracker.WebApi
                     //options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = true, // validate the server that created this token
+                        ValidateIssuer = false, // validate the server that created this token
                         ValidateAudience = false, // ensure that the recipient of the token is authorized to receive it 
                         ValidateLifetime = true, // check that the token is not expired and that the signing key of the issuer is valid
                         ValidateIssuerSigningKey = true, // verify that the key used to sign the incoming token is part of a list of trusted keys

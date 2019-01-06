@@ -72,7 +72,7 @@ namespace TimeTracker.Services.Services
 
         // creates new Project entity based on DTO sent in request body
         // returns DTO with ProjectID and Name
-        public ProjectDto CreateProject(ProjectCreateDto project)
+        public ProjectDto CreateProject(ProjectCreateEditDto project)
         {
             var entity = new Project
             {
@@ -117,6 +117,20 @@ namespace TimeTracker.Services.Services
             var projectToRemove = new Project { ProjectID = projectId };
 
             _context.Projects.Remove(projectToRemove);
+            _context.SaveChanges();
+        }
+
+
+        public void UpdateProject(ProjectDto projectToUpdate, ProjectCreateEditDto updatedProject)
+        {
+            var entity = new Project()
+            {
+                ProjectID = projectToUpdate.ProjectID,
+                Name = updatedProject.Name
+            };
+
+
+            _context.Projects.Update(entity);
             _context.SaveChanges();
         }
     }

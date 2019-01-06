@@ -47,7 +47,7 @@ namespace TimeTracker.WebApi.Controllers
 
         // POST: api/project
         [HttpPost]
-        public IActionResult CreateProject([FromBody]ProjectCreateDto project)
+        public IActionResult CreateProject([FromBody]ProjectCreateEditDto project)
         {
             if (project == null)
                 return BadRequest("Project object cannot be null");
@@ -67,6 +67,19 @@ namespace TimeTracker.WebApi.Controllers
                 return NotFound();
 
             _projectService.RemoveProject(projectId);
+            return NoContent();
+        }
+
+        // PUT: api/project/{projectId}
+        [HttpPut("{projectId}")]
+        public IActionResult UpdateProject(int projectId, [FromBody] ProjectCreateEditDto updatedProject)
+        {
+            var projectToUpdate = _projectService.GetProjectById(projectId);
+
+            if (projectToUpdate == null)
+                return NotFound();
+
+            _projectService.UpdateProject(projectToUpdate, updatedProject);
             return NoContent();
         }
     }

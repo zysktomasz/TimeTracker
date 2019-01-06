@@ -11,7 +11,8 @@ namespace TimeTracker.Services.Interfaces
         ProjectDto GetProjectByName(string name);
         IEnumerable<ProjectDto> GetAllProjects();
 
-        ProjectDto CreateProject(ProjectCreateDto project);
+        ProjectDto CreateProject(ProjectCreateEditDto project);
         void RemoveProject(int projectId);
+        void UpdateProject(ProjectDto projectToUpdate, ProjectCreateEditDto updatedProject);
     }
 }

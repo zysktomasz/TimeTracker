@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TimeTracker.Services.DTO.Project
 {
-    public class ProjectCreateDto
+    public class ProjectCreateEditDto
     {
         public string Name { get; set; }
     }

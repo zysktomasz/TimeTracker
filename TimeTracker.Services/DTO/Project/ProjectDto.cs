@@ -8,6 +8,6 @@ namespace TimeTracker.Services.DTO.Project
     {
         public int ProjectID { get; set; }
         public string Name { get; set; }
-
+        public int TotalHours { get; set; }
     }
 }

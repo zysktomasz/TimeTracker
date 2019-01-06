@@ -62,9 +62,20 @@ namespace TimeTracker.Services.Services
             var projectsFromDb = _context
                                     .Projects
                                         .Where(p => p.UserAccount == _currentUser)
+                                    .Include(p => p.Activities)
                                     .OrderByDescending(p => p.ProjectID)
                                     .AsEnumerable();
-            var result = _mapper.Map<IEnumerable<ProjectDto>>(projectsFromDb);
+
+            // update ProjectDto to include TotalHours
+            // quickly done, might consider updating
+            var result = projectsFromDb.Select(p => new ProjectDto()
+            {
+                ProjectID = p.ProjectID,
+                Name = p.Name,
+                TotalHours = (p.Activities.Where(a => a.TimeEnd != null).Sum(a => (int)a.TimeTotal) / 3600) // ? xD ?
+            }).ToList();
+
+            //var result = _mapper.Map<IEnumerable<ProjectDto>>(projectsFromDb);
 
             return result;
         }

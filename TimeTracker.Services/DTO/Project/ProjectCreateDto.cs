@@ -5,7 +5,7 @@ using TimeTracker.Domain.Enums;
 
 namespace TimeTracker.Services.DTO.Project
 {
-    public class ProjectCreateEditDto
+    public class ProjectCreateDto
     {
         public string Name { get; set; }
         public string Color { get; set; }

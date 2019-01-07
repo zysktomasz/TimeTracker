@@ -7,11 +7,11 @@ using TimeTracker.Services.Interfaces;
 
 namespace TimeTracker.Services.DTO.Project
 {
-    public class ProjectCreateEditDtoValidator : AbstractValidator<ProjectCreateEditDto>
+    public class ProjectCreateDtoValidator : AbstractValidator<ProjectCreateDto>
     {
         private readonly IProjectService _projectService;
 
-        public ProjectCreateEditDtoValidator(IProjectService projectService)
+        public ProjectCreateDtoValidator(IProjectService projectService)
         {
             _projectService = projectService;
 

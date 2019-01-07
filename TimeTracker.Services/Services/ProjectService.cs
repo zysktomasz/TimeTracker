@@ -94,7 +94,7 @@ namespace TimeTracker.Services.Services
 
         // creates new Project entity based on DTO sent in request body
         // returns DTO with ProjectID and Name
-        public ProjectDto CreateProject(ProjectCreateEditDto project)
+        public ProjectDto CreateProject(ProjectCreateDto project)
         {
             // convert string color to enum color
             // already validated string color to be valid enum
@@ -148,7 +148,7 @@ namespace TimeTracker.Services.Services
         }
 
 
-        public void UpdateProject(ProjectDto projectToUpdate, ProjectCreateEditDto updatedProject)
+        public void UpdateProject(ProjectDto projectToUpdate, ProjectEditDto updatedProject)
         {
             // convert string color to enum color
             // already validated string color to be valid enum

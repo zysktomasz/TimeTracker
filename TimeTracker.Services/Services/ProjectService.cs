@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using TimeTracker.Domain.Entities;
+using TimeTracker.Domain.Enums;
 using TimeTracker.Domain.Identity;
 using TimeTracker.Persistance;
 using TimeTracker.Services.DTO.Project;
@@ -43,13 +44,22 @@ namespace TimeTracker.Services.Services
             var project = _context
                             .Projects
                                 .Where(p => p.UserAccount == _currentUser)
+                            .Include(p => p.Activities)
                             .AsNoTracking()
                             .SingleOrDefault(p => p.ProjectID == projectId);
 
             if (project == null)
                 return null;
 
-            var projectDto = _mapper.Map<ProjectDto>(project);
+            // TODO: haven't read on a way to calculate TotalHours using autoMapper
+            var projectDto = new ProjectDto()
+            {
+                ProjectID = project.ProjectID,
+                Name = project.Name,
+                Color = project.Color.ToString(),
+                TotalHours = (project.Activities.Where(a => a.TimeEnd != null).Sum(a => (int)a.TimeTotal) / 3600) // ? xD ?
+            };
+            //var projectDto = _mapper.Map<ProjectDto>(project);
 
             return projectDto;
         }
@@ -72,6 +82,7 @@ namespace TimeTracker.Services.Services
             {
                 ProjectID = p.ProjectID,
                 Name = p.Name,
+                Color = p.Color.ToString(),
                 TotalHours = (p.Activities.Where(a => a.TimeEnd != null).Sum(a => (int)a.TimeTotal) / 3600) // ? xD ?
             }).ToList();
 
@@ -85,9 +96,14 @@ namespace TimeTracker.Services.Services
         // returns DTO with ProjectID and Name
         public ProjectDto CreateProject(ProjectCreateEditDto project)
         {
+            // convert string color to enum color
+            // already validated string color to be valid enum
+            Enum.TryParse(project.Color, out ColorEnum colorEnum);
+
             var entity = new Project
             {
                 Name = project.Name,
+                Color = colorEnum,
                 UserAccount = _currentUser
             };
 
@@ -134,9 +150,14 @@ namespace TimeTracker.Services.Services
 
         public void UpdateProject(ProjectDto projectToUpdate, ProjectCreateEditDto updatedProject)
         {
+            // convert string color to enum color
+            // already validated string color to be valid enum
+            Enum.TryParse(updatedProject.Color, out ColorEnum colorEnum);
+
             var entity = new Project()
             {
                 ProjectID = projectToUpdate.ProjectID,
+                Color = colorEnum,
                 Name = updatedProject.Name
             };
 

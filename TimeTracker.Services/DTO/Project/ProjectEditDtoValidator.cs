@@ -24,7 +24,7 @@ namespace TimeTracker.Services.DTO.Project
                 .MaximumLength(100);
 
             RuleFor(project => project)
-                .Must(BeUniqueNameUnlessItsTheSame).WithMessage("You have another project with this name.");
+                .Must(BeUniqueNameUnlessItsTheSame).WithMessage("You have another project with this name :(");
 
             RuleFor(x => x.Color)
                 .NotEmpty()
@@ -39,8 +39,12 @@ namespace TimeTracker.Services.DTO.Project
 
             // if it is the same project you are trying update (so you dont change name, but change other property
             // like Color); then allow updating
-            if (projectFromDb.ProjectID == project.ProjectID)
-                return true;
+            if (projectFromDb != null)
+            {
+                if (projectFromDb.ProjectID == project.ProjectID)
+                    return true;
+            }
+            
 
             // now check your other projects for unique name
             return (projectFromDb == null) ? true : false; 
